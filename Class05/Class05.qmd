@@ -1,0 +1,262 @@
+---
+title: "Class 5: Data Viz with ggplot"
+author: "Jessica (PID: A15647602)"
+format: pdf
+editor_options: 
+  chunk_output_type: inline
+---
+
+R has lots of ways to make figures and graphs
+**"Base" R** - the `plot()` funciton
+
+```{r}
+plot(cars) 
+
+```
+
+A very popular package is **ggplot2**
+Before I can use any package, i need to install it; `install.packages("ggplot2")` command/function. 
+
+Then to use the package I need to load it as `library(ggplot2)` 
+
+```{r}
+library(ggplot2)
+ggplot(cars) + aes( x = speed, y = dist) + geom_point()
+```
+
+For "simple" plots like this one base R code will be much better than ggplot code
+
+Let's fit a model and show it on my plot.
+
+```{r}
+ggplot(cars) + 
+  aes( x = speed, y = dist) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+```{r}
+ggplot(cars) + 
+  aes( x = speed, y = dist) + 
+  geom_point() + 
+  labs(title = "Speed and Stopping Distances of Cars", 
+       x = "Speed (MPH)", 
+       y = "Stopping Distance (ft)", 
+       subtitle = "Correlation between stopping distance and speed ofcars",
+       caption = "Dataset: 'cars'") +
+  geom_smooth(method = "lm", se = FALSE)
+theme_bw()
+```
+
+
+
+Every ggplot has at least 3 layers
+
+- **data** (data.frame - the numbers or stuff you want to plot)
+- **aes**thetics (mapping of your data columns to your plot, position, size, line type, line width, color, shape)
+- **geom**s (`geom_point()`, `geom_line()`, `geom_col()`)
+
+```{r}
+head(mtcars)
+
+#Make me a ggplot of the `mtcars` data set using `mpg` vs `disp` and set the size of the points to the `hp` and set the color to `am`
+
+ggplot(mtcars) + 
+  aes(x = mpg, y = disp, size = hp, col = am ) + 
+  geom_point() +
+  facet_wrap(~am)
+```
+
+```{r}
+ggplot(mtcars) +
+  aes(x = mpg, y = disp, size = hp, col = am) + 
+  geom_point(col = "blue")
+```
+
+```{r}
+#install.packages(ggrepel)
+library(ggrepel)
+
+ggplot(mtcars) +
+  aes(x = mpg, y = disp, size = hp, col = am, label = rownames(mtcars)) +
+  geom_point()+
+  geom_text_repel()
+
+```
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+
+```{r}
+nrow(genes)
+```
+```{r}
+colnames(genes)
+ncol(genes)
+```
+
+```{r}
+table(genes$State)
+```
+```{r}
+round(table(genes$State)/nrow(genes)*100, 2)
+```
+
+```{r}
+ggplot(genes) +
+  aes(x = Condition1, y = Condition2) +
+  geom_point()
+
+```
+```{r}
+p <- ggplot(genes) + 
+    aes(x=Condition1, y=Condition2, col=State) +
+    geom_point()
+p + scale_colour_manual( values=c("blue","gray","red")) +
+  labs(title = "Gene Expression Changes Upon Drug Treatment",
+       x = "Control (no drug)",
+       y = "Drug Treatment")
+```
+
+```{r}
+# File location online
+url <- "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+
+gapminder <- read.delim(url)
+```
+
+#install.packages(dplyr)
+
+```{r}
+library(dplyr)
+
+gapminder_2007 <- gapminder %>% filter(year==2007)
+
+ggplot(gapminder_2007) +
+  aes(x =gdpPercap, y = lifeExp) +
+  geom_point()
+```
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x =gdpPercap, y = lifeExp) +
+  geom_point(alpha = 0.5)
+```
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x =gdpPercap, y = lifeExp, color = continent, size = pop) +
+  geom_point(alpha = 0.5)
+```
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x =gdpPercap, y = lifeExp, color = pop) +
+  geom_point(alpha = 0.8)
+```
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x =gdpPercap, y = lifeExp, size = pop) +
+  geom_point(alpha = 0.5)
+```
+
+```{r}
+ggplot(gapminder_2007) +
+  geom_point(aes(x = gdpPercap, y = lifeExp, size = pop), alpha=0.5) +
+  scale_size_area(max_size = 10)
+```
+
+```{r}
+gapminder_1957 <- gapminder %>% filter(year==1957)
+
+ggplot(gapminder_1957) +
+  geom_point(aes(x = gdpPercap, y = lifeExp, color = continent, size = pop), alpha=0.7) +
+  scale_size_area(max_size = 10)
+```
+
+```{r}
+gapminder_1957 <- gapminder %>% filter(year==1957 | year==2007)
+
+ggplot(gapminder_1957) +
+  geom_point(aes(x = gdpPercap, y = lifeExp, color = continent, size = pop), alpha=0.7) +
+  scale_size_area(max_size = 10) + 
+  facet_wrap(~year)
+```
+
+```{r}
+gapminder_top5 <- gapminder %>% 
+  filter(year==2007) %>% 
+  arrange(desc(pop)) %>% 
+  top_n(5, pop)
+
+gapminder_top5
+```
+
+```{r}
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = country, y = pop))
+```
+
+```{r}
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = country, y = pop, fill = continent))
+```
+
+```{r}
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = country, y = pop, fill = lifeExp))
+```
+
+```{r}
+ggplot(gapminder_top5) +
+  aes(x=country, y=pop, fill=gdpPercap) +
+  geom_col()
+```
+```{r}
+ggplot(gapminder_top5) +
+  aes(x=reorder(country, -pop), y=pop, fill=gdpPercap) +
+  geom_col()
+```
+
+```{r}
+ggplot(gapminder_top5) +
+  aes(x=reorder(country, -pop), y=pop, fill=country) +
+  geom_col(col="gray30") +
+  guides(fill="none")
+```
+
+```{r}
+head(USArrests)
+```
+
+```{r}
+USArrests$State <- rownames(USArrests)
+ggplot(USArrests) +
+  aes(x=reorder(State,Murder), y=Murder) +
+  geom_col() +
+  coord_flip()
+```
+
+```{r}
+ggplot(USArrests) +
+  aes(x=reorder(State,Murder), y=Murder) +
+  geom_point() +
+  geom_segment(aes(x=State, 
+                   xend=State, 
+                   y=0, 
+                   yend=Murder), color="blue") +
+  coord_flip()
+```
+
+```{r}
+ggplot(mtcars) + aes(x=mpg, y=disp) + geom_point()
+```
+```{r}
+ggplot(mtcars, aes(mpg, disp)) + geom_point()
+```
+
+

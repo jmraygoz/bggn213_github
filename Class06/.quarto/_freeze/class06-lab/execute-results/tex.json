@@ -1,0 +1,15 @@
+{
+  "hash": "b7b009055a055a8f028c59875728d547",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Class06: R functions\"\nauthor: \"Jessica PID A15647602\"\nformat: pdf\neditor_options: \n  chunk_output_type: inline\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nadd <- function(x, y = 1){\n  x + y\n}\n```\n:::\n\n\nCan I use it?\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nadd(1,1)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n\n```{.r .cell-code}\nadd(x = 1, y = 100)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 101\n```\n\n\n:::\n\n```{.r .cell-code}\nadd(c(100, 1, 100), y = 1) \n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 101   2 101\n```\n\n\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nadd(1, 1)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n\n\n\nQ. Make a function; `generate_DNA()` that makes a random nucleotide sequence of any length\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngenerate_DNA <- function(){\n\nbases <- c(\"A\", \"T\", \"C\", \"G\")\nsequence <- sample(bases, size = 10, replace = TRUE)\n}\n```\n:::\n\n\n\nThat is my working snipet now i can make a function.\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngenerate_DNA <- function(length){\n  bases <- c(\"A\", \"T\", \"C\", \"G\")\n  sequence <- sample(bases, size = length, replace = TRUE)\n  return(sequence)\n}\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\ngenerate_DNA(15)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n [1] \"G\" \"A\" \"C\" \"G\" \"A\" \"T\" \"G\" \"G\" \"T\" \"A\" \"T\" \"C\" \"T\" \"G\" \"T\"\n```\n\n\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\naa <- unique(bio3d::aa.table$aa1)[1:20]\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\ngenerate_protein <- function(length){\n  amino_acids<- c(aa)\n  protein_sequence <- sample(amino_acids, size = length, replace = TRUE)\n  protein_sequence <- paste(protein_sequence, collapse = \"\") #added to remove space\n   return(protein_sequence)\n  }\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\ngenerate_protein(10)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] \"YHPSFVCHQM\"\n```\n\n\n:::\n:::\n\n\n Q. Generate random protein sequences of length 6 to 12.\n \n\n\n::: {.cell}\n\n```{.r .cell-code}\nanswer <- sapply(6:12, generate_protein)\nanswer\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] \"AYCEHN\"       \"MANNLVS\"      \"SLDCTQWL\"     \"NEHFNLLYG\"    \"SMEKDKFHFY\"  \n[6] \"RYAHHNSWHMM\"  \"YEKESWNRNGSM\"\n```\n\n\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\ncat( paste(\">id.\", 6:12, \"\\n\",  answer, sep = \"\"), sep = \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n>id.6\nAYCEHN\n>id.7\nMANNLVS\n>id.8\nSLDCTQWL\n>id.9\nNEHFNLLYG\n>id.10\nSMEKDKFHFY\n>id.11\nRYAHHNSWHMM\n>id.12\nYEKESWNRNGSM\n```\n\n\n:::\n:::\n\n::: {.cell}\n\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}

@@ -1,0 +1,5 @@
+ # R script 
+ x <- 1:50
+plot(x)
+plot(x, sin(x), type = "l", col = "blue")
+plot(x = x, y=sin(x), col = "red", typ ="l", lwd = "3")

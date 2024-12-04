@@ -1,0 +1,57 @@
+---
+title: "Class06-HW"
+author: Jessica PID: A15647602
+format: pdf
+---
+
+HW Question 6
+
+```{r}
+# Can you improve this analysis code?
+
+library(bio3d)
+s1 <- read.pdb("4AKE")  # kinase with drug
+s2 <- read.pdb("1AKE")  # kinase no drug
+s3 <- read.pdb("1E4Y")  # kinase with drug
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+s3.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s1.b <- s1.chainA$atom$b
+s2.b <- s2.chainA$atom$b
+s3.b <- s3.chainA$atom$b
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor")
+plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+```
+
+HW Question 6 Answer:
+
+```{r}
+library(bio3d) #This will provide the read.pdb file
+
+#Function name
+Analyse_protein <- function(Protein){ 
+  
+  s1 <- read.pdb(Protein) #This is to access the online pdb file data
+  s1.chainA <- trim.pdb(s1, chain="A", elety="CA") #Trim and filter the data to retrieve specific data from chain A and elety CA
+  s1.b <- s1.chainA$atom$b #Selecting the data from the previously filtered chain A and only elety CA, then selecting the atom's b values 
+  plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")  #plot the selected proteins Bfactor vs residues.
+  
+  return() #this will return and generate the plot
+  
+   }
+```
+
+```{r}
+Analyse_protein("1E4Y")
+#This allows for you to add a Protein PDB file to generate a plot that contains the 
+```
+
+```{r}
+Analyse_protein("4AKE") #It works for different proteins
+```
+
+```{r}
+Analyse_protein("1AKE") #It worrks again...
+```
+
