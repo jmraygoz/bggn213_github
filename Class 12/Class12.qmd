@@ -1,0 +1,36 @@
+---
+title: "Class 12"
+author: "Jessica PID: A15647602"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+---
+#Section 1. Proportion of G/G in a population
+
+```{r}
+mxl <- read.csv("373531-SampleGenotypes-Homo_sapiens_Variation_Sample_rs8067378.csv")
+head(mxl)
+```
+
+```{r}
+table(mxl$Genotype..forward.strand.)
+```
+
+```{r}
+table(mxl$Genotype..forward.strand.)/ nrow(mxl) *100
+```
+
+Now we're looking at a different population, GBR.
+```{r}
+gbr <- read.csv("373522-SampleGenotypes-Homo_sapiens_Variation_Sample_rs8067378.csv")
+head(gbr)
+```
+
+Find proportion of G/G
+
+```{r}
+round(table(gbr$Genotype..forward.strand.)/ nrow(gbr) * 100, 2)
+```
+
+#Section 4. Initial RNA seq Analysis
