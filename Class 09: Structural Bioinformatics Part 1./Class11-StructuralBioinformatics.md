@@ -55,8 +55,8 @@ aa
 b <- blast.pdb(aa)
 ```
 
-     Searching ... please wait (updates every 5 seconds) RID = N7024ZVE016 
-     ...........
+     Searching ... please wait (updates every 5 seconds) RID = N70AB824016 
+     .....
      Reporting 86 hits
 
 ``` r
@@ -74,12 +74,12 @@ head(b$hit.tbl)
 ```
 
             queryid subjectids identity alignmentlength mismatches gapopens q.start
-    1 Query_3973667     1AKE_A  100.000             214          0        0       1
-    2 Query_3973667     8BQF_A   99.533             214          1        0       1
-    3 Query_3973667     4X8M_A   99.533             214          1        0       1
-    4 Query_3973667     6S36_A   99.533             214          1        0       1
-    5 Query_3973667     8Q2B_A   99.533             214          1        0       1
-    6 Query_3973667     8RJ9_A   99.533             214          1        0       1
+    1 Query_4150999     1AKE_A  100.000             214          0        0       1
+    2 Query_4150999     8BQF_A   99.533             214          1        0       1
+    3 Query_4150999     4X8M_A   99.533             214          1        0       1
+    4 Query_4150999     6S36_A   99.533             214          1        0       1
+    5 Query_4150999     8Q2B_A   99.533             214          1        0       1
+    6 Query_4150999     8RJ9_A   99.533             214          1        0       1
       q.end s.start s.end    evalue bitscore positives mlog.evalue pdb.id    acc
     1   214       1   214 1.58e-156      432    100.00    358.7458 1AKE_A 1AKE_A
     2   214      21   234 2.59e-156      433    100.00    358.2516 8BQF_A 8BQF_A
