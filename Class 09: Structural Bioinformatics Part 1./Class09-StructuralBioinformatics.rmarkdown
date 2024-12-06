@@ -1,0 +1,332 @@
+---
+title: "Class 09: Structural Bioinformatics Part 1"
+author: "Jessica PID A15647602"
+format: gfm
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+
+## 1: Introduction to the RCSB Protein Data Bank (PDB)
+
+
+
+```{r}
+PDB_file <- "Data Export Summary.csv"
+
+PDB = read.csv(PDB_file, row.names=1)
+head(PDB)
+```
+
+
+
+> Q1: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy. A. 93.49072
+
+
+
+```{r}
+library(dplyr)
+
+# Clean numeric columns by removing commas
+PDB <- PDB %>%
+  mutate(across(c(X.ray, EM, NMR, Multiple.methods, Neutron, Other, Total), 
+                ~ as.numeric(gsub(",", "", .))))
+
+# Sum the X-ray and Electron Microscopy and Total values
+total_xray <- sum(PDB$X.ray, na.rm = TRUE)
+total_em <- sum(PDB$EM, na.rm = TRUE)
+total <- sum(PDB$Total, na.rm = TRUE)
+
+# Print the Total Percent of Structures by EM and Xray
+Percent_EM_Xray <- ((total_em + total_xray)/ total) * 100
+Percent_EM_Xray
+
+```
+
+
+
+> Q2: What proportion of structures in the PDB are protein? A. 86.3961% of structures are Protein (only). However there are more strucutres with Protein/Oligosaccharide and Protein/NA and this accounts for 97.89729%.
+
+
+
+```{r}
+Protein_only <- PDB$Total[1]
+Proportion_protein_only <- Protein_only/total * 100
+Proportion_protein_only
+
+Protein_oligos <- PDB$Total[2]
+Protein_na <- PDB$Total[3]
+Proportion_all_protein <- (Protein_only + Protein_oligos + Protein_na)/total * 100
+Proportion_all_protein
+```
+
+
+
+> Q3: Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB? A. This query matches 4,563 Structures in HIV search.
+
+## 2. Visualizing the HIV-1 protease structure
+
+#Using Mol\*
+
+
+
+```{r}
+library(grid)
+
+img <- rasterGrob(png::readPNG("1HSG.png"), interpolate=TRUE)
+grid.newpage()
+grid.draw(img)
+```
+
+```{r}
+img2 <- rasterGrob(png::readPNG("1HSG-3.png"), interpolate=TRUE)
+grid.newpage()
+grid.draw(img2)
+```
+
+
+
+> Q4: Water molecules normally have 3 atoms. Why do we see just one atom per water molecule in this structure? A. In this strucutre we only see the Oxygen atom from the water, which is what makes the binding.
+
+> Q5: There is a critical “conserved” water molecule in the binding site. Can you identify this water molecule? What residue number does this water molecule have A. HOH 308
+
+> Q6. Generate and save a figure clearly showing the two distinct chains of HIV-protease along with the ligand. You might also consider showing the catalytic residues ASP 25 in each chain and the critical water (we recommend “Ball & Stick” for these side-chains). Add this figure to your Quarto document.
+
+
+
+```{r}
+img3 <- rasterGrob(png::readPNG("1HSG-4.png"), interpolate=TRUE)
+grid.newpage()
+grid.draw(img3)
+
+img4 <- rasterGrob(png::readPNG("1HSG-5.png"), interpolate=TRUE)
+grid.newpage()
+grid.draw(img4)
+```
+
+
+
+## Introduction to bio3D in R
+
+
+
+```{r}
+library(bio3d)
+pdb <- read.pdb("1hsg.pdb")
+pdb
+```
+
+
+
+> Q7: How many amino acid residues are there in this pdb object? A. 198 amino acid residues. Q8: Name one of the two non-protein residues? A. HOH Q9: How many protein chains are in this structure? A. There are 2 chains.
+
+
+
+```{r}
+attributes(pdb)
+head(pdb$atom)
+```
+
+
+
+Predicting functional motions of a single structure
+
+
+
+```{r}
+adk <- read.pdb("6s36")
+adk
+```
+
+```{r}
+# Perform flexiblity prediction
+m <- nma(adk)
+```
+
+```{r}
+plot(m)
+```
+
+```{r}
+mktrj(m, file="adk_m7.pdb")
+```
+
+
+
+## 4. Comparative structure analysis of Adenylate Kinase
+
+
+
+```{r}
+# Install packages in the R console NOT your Rmd/Quarto file
+
+#install.packages("bio3d")
+#install.packages("devtools")
+#install.packages("BiocManager")
+
+#BiocManager::install("msa")
+#devtools::install_bitbucket("Grantlab/bio3d-view")
+```
+
+
+
+> Q10. Which of the packages above is found only on BioConductor and not CRAN? A. The package msa is found only on BioConductor and not on CRAN
+
+> Q11. Which of the above packages is not found on BioConductor or CRAN?: A. The package bio3d-view is not found on BioConductor or CRAN; it is available through BitBucket.
+
+> Q12. True or False? Functions from the devtools package can be used to install packages from GitHub and BitBucket? A. True
+
+Search and retrieve ADK structures
+
+
+
+```{r}
+library(bio3d)
+aa <- get.seq("1ake_A")
+```
+
+```{r}
+aa
+```
+
+
+
+> Q13. How many amino acids are in this sequence, i.e. how long is this sequence? A. 214 amino acids.
+
+
+
+```{r}
+# Blast or hmmer search 
+#b <- blast.pdb(aa)
+```
+
+```{r}
+# Plot a summary of search results
+#hits <- plot(b)
+```
+
+```{r}
+# List out some 'top hits'
+#head(hits$pdb.id)
+```
+
+```{r}
+hits <- NULL
+hits$pdb.id <- c('1AKE_A','6S36_A','6RZE_A','3HPR_A','1E4V_A','5EJE_A','1E4Y_A','3X2S_A','6HAP_A','6HAM_A','4K46_A','3GMT_A','4PZL_A')
+# Download related PDB files
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+
+```{r}
+# Align releated PDBs
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+
+```{r}
+# Vector containing PDB codes for figure axis
+ids <- basename.pdb(pdbs$id)
+
+# Draw schematic alignment
+plot(pdbs, labels=ids)
+```
+
+
+
+# Annotate collected PDB Structures
+
+
+
+```{r}
+anno <- pdb.annotate(ids)
+unique(anno$source)
+```
+
+```{r}
+#We can view all available annotation data:
+anno
+```
+
+
+
+#Principal component analysis
+
+
+
+```{r}
+# Perform PCA
+pc.xray <- pca(pdbs)
+plot(pc.xray)
+```
+
+
+
+#clustering analysis based on the pairwise structural deviation
+
+
+
+```{r}
+# Calculate RMSD
+rd <- rmsd(pdbs)
+
+# Structure-based clustering
+hc.rd <- hclust(dist(rd))
+grps.rd <- cutree(hc.rd, k=3)
+
+plot(pc.xray, 1:2, col="grey50", bg=grps.rd, pch=21, cex=1)
+```
+
+
+
+## 5. Optional further visualization
+
+
+
+```{r}
+# Visualize first principal component
+pc1 <- mktrj(pc.xray, pc=1, file="pc_1.pdb")
+```
+
+
+
+We can also plot our main PCA results with ggplot:
+
+
+
+```{r}
+#Plotting results with ggplot2
+library(ggplot2)
+library(ggrepel)
+
+df <- data.frame(PC1=pc.xray$z[,1], 
+                 PC2=pc.xray$z[,2], 
+                 col=as.factor(grps.rd),
+                 ids=ids)
+
+p <- ggplot(df) + 
+  aes(PC1, PC2, col=col, label=ids) +
+  geom_point(size=2) +
+  geom_text_repel(max.overlaps = 20) +
+  theme(legend.position = "none")
+p
+```
+
+
+
+## 6. Normal mode analysis \[optional\]
+
+
+
+```{r}
+# NMA of all structures
+modes <- nma(pdbs)
+
+plot(modes, pdbs, col=grps.rd)
+
+```
+
+
+
+> Q14. What do you note about this plot? Are the black and colored lines similar or different? Where do you think they differ most and why? A. The black and colored lines are different, they contain different peaks. They are two different structural conformations of Adk and differ by a collective low frequency displacement of two nucleotide-binding site regions that display distinct flexibilities upon nucleotide binding.
+
