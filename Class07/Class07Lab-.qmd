@@ -1,0 +1,188 @@
+---
+title: "Class 07: Machine Learning 1"
+author: "Jessica PID: A15647602"
+format: pdf
+editor_options: 
+  chunk_output_type: inline
+---
+
+Before we get into the clustering methods let's make some sample data to cluster where we know what the answer should be.
+
+To help with this I will use the 'rnorm()' function.
+
+```{r}
+hist( rnorm(150000, mean = c(-3)))
+```
+
+```{r}
+n = 10000
+hist(c(rnorm(n, mean = 3), rnorm(n, mean = -3)))
+hist( rnorm(150000, mean = c(-3, +3)))
+
+```
+
+```{r}
+n = 30
+x <- c( rnorm(n, mean = 3), rnorm(n, mean = -3))
+y <- rev(x)
+
+z <- cbind(x, y)
+plot(z)
+```
+
+## K-means clustering
+
+The function in base R for k-means clustering is called `kmeans()`
+
+```{r}
+km <- kmeans(z, centers = 2)
+km
+  
+```
+
+```{r}
+km$centers
+
+```
+
+> Q.  Print out the cluster membership vector (i.e our main answer)
+
+```{r}
+km$cluster
+
+```
+
+```{r}
+plot(z, col = c("red", "blue"))
+```
+
+```{r}
+plot(x, col = c(1,2,3))
+# color by number (1,2,3, etc.)
+```
+
+Plot this with clustering result and add cluster centers:
+```{r}
+plot(z, col = km$cluster)
+points(km$centers, col = "blue", pch = 17, cex = 2)
+```
+
+> Q. Can you cluster our data in `z` into four clusters please?
+
+```{r}
+km4 <- kmeans(z, centers = 4)
+plot(z, col = km4$cluster)
+points(km4$centers, col = "blue", pch = 15, cex = 2)  
+```
+
+## Hierarchical Clustering
+
+The main function for hierarchical clustering in base R is called `hclust()` 
+Unlike `kmeans()` I can not just pass in my data as input I first need a distance matrix from my data. 
+
+```{r}
+d <- dist(z)
+hc <- hclust(d)
+hc
+```
+There is a specific hclust plot() method...
+
+```{r}
+plot(hc)
+abline(h = 10, col = "red")
+```
+
+To get my main clustering results (i.e. the membershp vector) I can "cut" my tree at a given height. To do this I will use the `cutree()`
+
+```{r}
+grps <- cutree(hc, h = 10)
+grps
+```
+
+```{r}
+plot(z, col = grps)
+```
+
+## Principal Component Analysis (PCA)
+
+#PCA of UK food data
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url, row.names = 1)
+```
+
+Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
+## Complete the following code to find out how many rows and columns are in x?
+
+```{r}
+nrow(x)
+ncol(x)
+dim(x)
+```
+```{r}
+head(x)
+```
+
+```{r}
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+```
+
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+
+```{r}
+pairs(x, col=rainbow(10), pch=16)
+```
+
+## PCA to the rescue
+
+The main function to do PCA in base R is called `prcomp()`
+
+Note that I need to take the transpose of this particular data as that is what the`prcomp()` help page was asking for.
+
+```{r}
+pca <- prcomp(t(x))
+summary(pca)
+```
+
+Let's see what is inside our result object `pca` that we just calculated:
+
+```{r}
+attributes(pca)
+```
+
+```{r}
+pca$x
+```
+
+To make our main result figure, called a "PC plot" (or "score plot", "ordination plot", or "PC1 vs PC2 plot").
+
+```{r}
+plot(pca$x[,1], pca$x[,2], 
+     col = c("black", "red", "blue", "darkgreen"), 
+     pch =16, 
+     xlab = "PC1 (67.4%)", ylab = "PC2 (29%)")
+abline(h = 0, col = "gray", lty = 2)
+abline(v = 0, col = "gray", lty = 2)
+```
+
+##Variable loadings plot
+
+Can give us insight on how the original variables vary. 
+
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,1], las=2 )
+```
+
+```{r}
+pca$rotation
+```
+
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,2], las=2 )
+```
+
