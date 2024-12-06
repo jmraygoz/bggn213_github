@@ -1,0 +1,326 @@
+---
+title: "Class08-MiniProject"
+author: "Jessica A15647602"
+format: pdf
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+---
+Side note:
+```{r}
+head(mtcars)
+```
+Let's look at the `mean` value of every column:
+
+```{r}
+apply(mtcars, 2, mean)
+```
+Find the `sd`
+
+```{r}
+apply(mtcars, 2, sd)
+```
+
+
+```{r}
+pca <- prcomp(mtcars)
+biplot(pca)
+```
+Let's try scaling the data:
+
+```{r}
+mtscale <- scale(mtcars)
+head(mtscale)
+```
+
+What is the mean of each dimension/column in mtscale?
+
+```{r}
+round(apply(mtscale, 2, mean), 3)
+```
+```{r}
+round(apply(mtscale, 2, sd), 3)
+```
+
+Let's plot `mpg` vs `disp` for both mtcars and after the scalled data in `mtscale` 
+
+```{r}
+library(ggplot2)
+
+ggplot(mtcars) +
+  aes(mpg, disp) +
+  geom_point()
+```
+```{r}
+ggplot(mtscale) +
+  aes(mpg, disp) +
+  geom_point()
+```
+
+```{r}
+pca2 <- prcomp(mtscale)
+biplot(pca2)
+```
+
+##Breast Cancer FNA Data 
+
+```{r}
+library(readr)
+# Save your input data file into your Project directory
+fna.data <- "WisconsinCancer.csv"
+
+# Complete the following code to input the data and store as wisc.df
+wisc.df <- read.csv(fna.data, row.names=1)
+
+#view
+#View(wisc.df)
+
+# We can use -1 here to remove the first column
+wisc.data <- wisc.df[,-1]
+
+# Create diagnosis vector for later 
+diagnosis <- factor(wisc.df$diagnosis)
+```
+
+
+```{r}
+dim(wisc.data)
+```
+```{r}
+nrow(wisc.data)
+```
+```{r}
+table(diagnosis)
+```
+```{r}
+colnames(wisc.data)
+length(grep("_mean", colnames(wisc.data)))
+```
+
+
+>Q1. How many observations are in this dataset?
+A. There are 569 observations.
+
+>Q2. How many of the observations have a malignant diagnosis?
+A. There are 212 observations with malignant diagnosis.
+
+>Q3. How many variables/features in the data are suffixed with _mean?
+A. There are 10 features with _mean.
+
+##Principal Component Analysis (PCA)
+
+```{r}
+# Check column means and standard deviations
+colMeans(wisc.data)
+apply(wisc.data,2,sd)
+```
+
+We want to scale our data before PCA by setting `scale = true`
+
+```{r}
+# Perform PCA on wisc.data 
+wisc.pr <- prcomp(wisc.data, scale = TRUE)
+```
+
+```{r}
+# Look at Variance of each PCa
+summary(wisc.pr)
+```
+
+```{r}
+x <- summary(wisc.pr)
+plot(x$importance[2,], typ = "b")
+```
+
+
+```{r}
+#Generate PCA plot
+biplot(wisc.pr)
+attributes(wisc.pr)
+```
+
+
+>Q4. From your results, what proportion of the original variance is captured by the first principal components (PC1)?
+A. For PC1, the proportion of variance = 0.4427 ~ 44.27%
+
+>Q5. How many principal components (PCs) are required to describe at least 70% of the original variance in the data?
+A. PC3
+
+>Q6. How many principal components (PCs) are required to describe at least 90% of the original variance in the data?
+A. PC7
+
+> Q7. What stands out to you about this plot? Is it easy or difficult to understand? Why?
+A. The plot is very messy and difficult to understand. The ID values of the patients are labelled and are very large so they cover the entire plot. There is a lot of wording throughout the plot, making it hard to interpret. 
+
+```{r}
+head(wisc.pr$x)
+```
+ My main PCR result figure
+ 
+```{r}
+# Scatter plot observations by components 1 and 2
+plot(wisc.pr$x, col = diagnosis , 
+     xlab = "PC1", ylab = "PC2")
+```
+>Q8. Generate a similar plot for principal components 1 and 3. What do you notice about these plots?
+
+```{r}
+plot(wisc.pr$x[, 1:3], col = diagnosis, 
+     xlab = "PC1", ylab = "PC3")
+```
+##ggplot
+
+```{r}
+# Create a data.frame for ggplot
+df <- as.data.frame(wisc.pr$x)
+df$diagnosis <- diagnosis
+
+# Load the ggplot2 package
+library(ggplot2)
+
+# Make a scatter plot colored by diagnosis
+ggplot(df) + 
+  aes(PC1, PC2, col= diagnosis) + 
+  geom_point()
+```
+
+##Variance Explained
+
+```{r}
+# Calculate variance of each component
+pr.var <- wisc.pr$sdev^2
+head(pr.var)
+```
+
+```{r}
+#total variance explained of all principal components
+Total_val <- sum(pr.var)
+
+# Variance explained by each principal component: pve
+pve <- pr.var/Total_val
+pve
+
+# Plot variance explained for each principal component
+plot(pve, xlab = "Principal Component", 
+     ylab = "Proportion of Variance Explained", 
+     ylim = c(0, 1), type = "o")
+```
+
+```{r}
+# Alternative scree plot of the same data, note data driven y-axis
+barplot(pve, ylab = "Precent of Variance Explained",
+     names.arg=paste0("PC",1:length(pve)), las=2, axes = FALSE)
+axis(2, at=pve, labels=round(pve,2)*100 )
+```
+
+```{r}
+## ggplot based graph
+##install.packages("factoextra")
+library(factoextra)
+fviz_eig(wisc.pr, addlabels = TRUE)
+```
+
+##Communicating PCA results
+
+>Q9. For the first principal component, what is the component of the loading vector (i.e. wisc.pr$rotation[,1]) for the feature concave.points_mean? This tells us how much this original feature contributes to the first PC.
+A. concave.points_mean = -0.26085376
+
+```{r}
+wisc.pr$rotation[,1]
+
+```
+
+##Hierarchical clustering
+
+>Q10. Using the plot() and abline() functions, what is the height at which the clustering model has 4 clusters?
+A. Height is around 18-19
+
+```{r}
+# Scale the wisc.data data using the "scale()" function
+data.scaled <- scale(wisc.data)
+data.dist <- dist(data.scaled)
+wisc.hclust <- hclust(data.dist, method = "complete")
+plot(wisc.hclust)
+  abline(h = 18 , col="red", lty=2)
+```
+```{r}
+wisc.hclust <- hclust(data.dist, method = "single")
+plot(wisc.hclust)
+  abline(h = 18 , col="red", lty=2)
+```
+```{r}
+wisc.hclust <- hclust(data.dist, method = "average")
+plot(wisc.hclust)
+  abline(h = 18 , col="red", lty=2)
+```
+```{r}
+wisc.hclust <- hclust(data.dist, method = "ward.D2")
+plot(wisc.hclust)
+  abline(h = 18 , col="red", lty=2)
+```
+>Q12. Which method gives your favorite results for the same data.dist dataset? Explain your reasoning.
+A. I liked the "ward.D2" plot, it was the cleanest.
+
+##Combining Methods
+
+```{r}
+wisc.hclust.clusters <- cutree(wisc.hclust, k =4)
+table(wisc.hclust.clusters, diagnosis)
+```
+
+##Cluster in PC Space
+
+```{r}
+d <- dist(wisc.pr$x[,1:3])
+hc <- hclust(d, method ="ward.D2")
+plot(hc)
+```
+
+```{r}
+d <- dist(wisc.pr$x[,1:4])
+hc <- hclust(d, method ="ward.D2")
+plot(hc)
+```
+
+
+Cut this tree to yield 2 clusters
+
+```{r}
+grps <- cutree(hc, k =2)
+table(grps)
+```
+Compare to my expert M and B `diagnosis`
+
+```{r}
+table(diagnosis)
+```
+
+```{r}
+table(diagnosis, grps)
+```
+```{r}
+plot(wisc.pr$x[,1:2], col=grps)
+```
+```{r}
+plot(wisc.pr$x[,1:2], col=diagnosis)
+```
+
+```{r}
+g <- as.factor(grps)
+levels(g)
+```
+
+```{r}
+g <- relevel(g,2)
+levels(g)
+```
+
+```{r}
+# Plot using our re-ordered factor 
+plot(wisc.pr$x[,1:2], col=g)
+
+```
+
+
+```
+
