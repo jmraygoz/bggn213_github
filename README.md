@@ -10,4 +10,5 @@ My class work from [BGGN213](https://bioboot.github.io/bggn213_F24/) at UC San D
 - Class 9: [Intro to Structural Bioinformatics](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2009%3A%20Structural%20Bioinformatics%20Part%201./Class09-StructuralBioinformatics.md) 
 - Class 10: [Mini Halloween Project](https://github.com/jmraygoz/bggn213_github/blob/main/Class10%3A%20Halloween%20Mini-Project/Class10-MiniHalloween.md)
 - Class 11: [Structural Bioinformatics](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2009%3A%20Structural%20Bioinformatics%20Part%201./Class11-StructuralBioinformatics.md)
-
+- Class 12: [Population Scale Analysis](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2012/PopulationScaleAnalysis.md)
+- Class 13: 
