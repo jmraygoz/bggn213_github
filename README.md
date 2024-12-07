@@ -12,3 +12,4 @@ My class work from [BGGN213](https://bioboot.github.io/bggn213_F24/) at UC San D
 - Class 11: [Structural Bioinformatics](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2009%3A%20Structural%20Bioinformatics%20Part%201./Class11-StructuralBioinformatics.md)
 - Class 12: [Population Scale Analysis](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2012/PopulationScaleAnalysis.md)
 - Class 13: [RNA Seq with DESeq2](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2013/Class13.md)
+- Class 14: [RNASeq Mini Project](https://github.com/jmraygoz/bggn213_github/blob/main/Class14/Class14-RNASeq-Mini-Project.md)
