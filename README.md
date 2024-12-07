@@ -13,4 +13,4 @@ My class work from [BGGN213](https://bioboot.github.io/bggn213_F24/) at UC San D
 - Class 12: [Population Scale Analysis](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2012/PopulationScaleAnalysis.md)
 - Class 13: [RNA Seq with DESeq2](https://github.com/jmraygoz/bggn213_github/blob/main/Class%2013/Class13.md)
 - Class 14: [RNASeq Mini Project](https://github.com/jmraygoz/bggn213_github/blob/main/Class14/Class14-RNASeq-Mini-Project.md)
-- Class 15: [Pertussis Project](
+- Class 15: [Pertussis Mini Project](https://github.com/jmraygoz/bggn213_github/blob/main/class15/class15.md)
